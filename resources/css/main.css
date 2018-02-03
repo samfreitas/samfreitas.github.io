@@ -1,0 +1,30 @@
+/*----------------------------------------------------------
+HEADER
+----------------------------------------------------------*/
+.headerCanvas {
+	display: block;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 0;
+	right: 0;
+}
+
+.top-bar {
+	background: transparent;
+	position: relative;
+	height: 200px;
+	/*padding: 20px;*/
+}
+
+.top-bar-left,
+.top-bar-right {
+	position: relative;
+	z-index: 1;
+}
+
+.menu-text {
+	color: white;
+	font-size: 10em;
+	font-weight: bold;
+}
