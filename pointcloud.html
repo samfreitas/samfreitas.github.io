@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display a web map using an alternate projection</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+<script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+<script src="https://unpkg.com/@loaders.gl/3d-tiles@2.3.7/dist/dist.min.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+const ION_ASSET_ID = 1467089;
+const ION_TOKEN ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYWVkNmYyMS01NzY0LTRjOWYtOTU3NS00ZGU0M2RjMmY0ZWUiLCJpZCI6MzM3MDcsImlhdCI6MTU5OTEwNzgxNX0.LDa-w59dht8ZiRW_wwlfkNJ31uOpgqLCJVfWUTQoqlk';
+const TILESET_URL = `https://assets.cesium.com/${ION_ASSET_ID}/tileset.json`;
+const {MapboxLayer,Tile3DLayer} = deck;
+const {CesiumIonLoader} = loaders;
+const myDeckLayer = new MapboxLayer({
+  id: '3DTiles',
+  type: Tile3DLayer,
+  data: TILESET_URL,
+  loader: CesiumIonLoader,
+  loadOptions: {'cesium-ion': {accessToken: ION_TOKEN}},
+onTilesetLoad: tileset => {
+        const {cartographicCenter, zoom} = tileset;
+        const lng = cartographicCenter[0];
+        const lat = cartographicCenter[1];
+}});
+
+let style = {
+        version: 8,
+        sources: {},
+        glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+        layers: [
+          {
+            id: "background",
+            type: "background",
+            paint: {
+              "background-color": "#FFFFFF"
+            }
+          },
+        ]
+      };
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ3JhcGhpYWxsYyIsImEiOiJjbGJ6czdmczQxMG96M25tbjdtcHAzMXZsIn0.W51THNVZ1hqjky2typW9xg';
+
+const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        center: [-120.92972957066604, 38.191006242062144],
+        zoom: 18.03914093661168,
+        pitch: 71.5,
+        interactive: true,
+  customAttribution: 'Graphia, LLC'
+    });
+
+map.addControl(new mapboxgl.NavigationControl());
+
+map.once('load', () => { 
+map.addLayer(myDeckLayer); 
+});
+
+map.on('moveend', () => {
+});
+</script>
+
+</body>
+</html>
