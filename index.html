@@ -6,6 +6,7 @@
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>	
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
@@ -14,18 +15,721 @@ body { margin: 0; padding: 0; }
 <body>
 <div id="map"></div>
 <script>
-	// TO MAKE THE MAP APPEAR YOU MUST
-	// ADD YOUR ACCESS TOKEN FROM
-	// https://account.mapbox.com
-	mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
-    const map = new mapboxgl.Map({
+	var taxparcel = {"type": "FeatureCollection", "features": [{ "type": "Feature", "properties": { "PARCEL": "022", "APN": "48018022" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -120.930484, 38.192545, 0.0 ], [ -120.931398, 38.192614, 0.0 ], [ -120.931671, 38.192544, 0.0 ], [ -120.933326, 38.192514, 0.0 ], [ -120.93467, 38.192507, 0.0 ], [ -120.935972, 38.19254, 0.0 ], [ -120.936354, 38.192531, 0.0 ], [ -120.936273, 38.191151, 0.0 ], [ -120.936261, 38.190561, 0.0 ], [ -120.936256, 38.190425, 0.0 ], [ -120.936242, 38.189999, 0.0 ], [ -120.936222, 38.189552, 0.0 ], [ -120.936193, 38.188957, 0.0 ], [ -120.931493, 38.189124, 0.0 ], [ -120.931383, 38.187467, 0.0 ], [ -120.931369, 38.187297, 0.0 ], [ -120.931324, 38.186649, 0.0 ], [ -120.926589, 38.186879, 0.0 ], [ -120.926741, 38.188273, 0.0 ], [ -120.9268, 38.189031, 0.0 ], [ -120.927135, 38.192573, 0.0 ], [ -120.927437, 38.192584, 0.0 ], [ -120.928512, 38.192567, 0.0 ], [ -120.929363, 38.192554, 0.0 ], [ -120.930484, 38.192545, 0.0 ] ] ] } } ] };
+var bbox = turf.bbox(taxparcel);
+var center = turf.centerOfMass(taxparcel);
+var start = center.geometry;
+var bounds = [
+[bbox[0], bbox[1]],
+[bbox[2], bbox[3]]
+];
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ3JhcGhpYWxsYyIsImEiOiJjbGJ6czdmczQxMG96M25tbjdtcHAzMXZsIn0.W51THNVZ1hqjky2typW9xg';
+const map = new mapboxgl.Map({
         container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [0, 0],
-        zoom: 0.4,
-        projection: 'naturalEarth' // starting projection
+        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        center: [center.geometry.coordinates[0],center.geometry.coordinates[1]],
+        bounds: bounds,
+        pitch: 0,
+        interactive: true,
+        projection: "globe"
     });
+
+map.addControl(new mapboxgl.NavigationControl());
+
+map.once('load', () => { 
+
+map.fitBounds(bbox,{padding:40});
+
+map.setFog({});
+
+map.addSource('mapbox-dem', {
+'type': 'raster-dem',
+'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+'tileSize': 512,
+'maxzoom': 14
+});
+
+map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1 });
+
+map.addSource('taxparcel', {
+type: 'geojson',
+data: taxparcel,
+attribution: 'Calaveras Country GIS'
+});
+  
+map.addSource('0_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.afk2davt',
+attribution: 'Graphia LLC'
+});
+  
+map.addSource('0_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5xqnkhn8'
+});
+  
+map.addSource('0_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.bdi5se4y'
+});
+  
+map.addSource('0_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.10buirsh'
+});
+  
+map.addSource('0_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5qiaa6g9'
+});
+  
+map.addSource('1_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.9ey6upvx'
+});
+  
+map.addSource('1_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.8g841rrb'
+});
+  
+map.addSource('1_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.2pz2qe5b'
+});
+  
+map.addSource('1_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.1tfselhf'
+});
+  
+map.addSource('1_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.cpwrfvvx'
+});
+  
+map.addSource('2_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.c6u0v4yr'
+});
+  
+map.addSource('2_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7je5swd4'
+});
+  
+map.addSource('2_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.9bvespp3'
+});
+  
+map.addSource('2_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.8bzk1wej'
+});
+  
+map.addSource('2_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5siifa95'
+});
+  
+map.addSource('3_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7p967vro'
+});
+  
+map.addSource('3_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5eivpz7q'
+});
+  
+map.addSource('3_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.6ta3jmnf'
+});
+  
+map.addSource('3_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.054y290h'
+});
+  
+map.addSource('3_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.9gkpczd8'
+});
+  
+map.addSource('4_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.66xwil6u'
+});
+  
+map.addSource('4_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7dxsbpyj'
+});
+  
+map.addSource('4_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.74llj6j4'
+});
+  
+map.addSource('4_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5igtgyns'
+});
+  
+map.addSource('4_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.bs2p7j7w'
+});
+  
+map.addSource('4_5', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.6pxj2qb2'
+});
+  
+map.addSource('4_6', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.djnf5yqh'
+});
+  
+map.addSource('5_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.12h5ywcj'
+});
+  
+map.addSource('5_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.5czbrnlq'
+});
+  
+map.addSource('5_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.50hhvs75'
+});
+  
+map.addSource('5_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.4n6zqto4'
+});
+  
+map.addSource('5_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.2cdnt2lj'
+});
+  
+map.addSource('5_5', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.duf3niqc'
+});
+  
+map.addSource('5_6', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.3x6bxhpf'
+});
+  
+map.addSource('6_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7cyg246t'
+});
+  
+map.addSource('6_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.86xwf6kv'
+});
+  
+map.addSource('6_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.doylmdj2'
+});
+  
+map.addSource('6_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.6kp1m26v'
+});
+  
+map.addSource('6_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.c9lnp8xz'
+});
+  
+map.addSource('6_5', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.3adz5v8u'
+});
+  
+map.addSource('6_6', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.627as4zn'
+});
+  
+map.addSource('7_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.6ei4pzw8'
+});
+  
+map.addSource('7_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.68389k4g'
+});
+  
+map.addSource('7_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.1jf2pwwu'
+});
+  
+map.addSource('7_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.9mo3h2sl'
+});
+  
+map.addSource('7_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7jxkcqgg'
+});
+  
+map.addSource('7_5', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.9w7vnww2'
+});
+  
+map.addSource('7_6', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.7i6crp9l'
+});
+  
+map.addSource('8_0', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.b9ig9dcc'
+});
+  
+map.addSource('8_1', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.cpgexemc'
+});
+  
+map.addSource('8_2', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.89rnaen9'
+});
+  
+map.addSource('8_3', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.b2pp0jkn'
+});
+  
+map.addSource('8_4', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.c217i4as'
+});
+  
+map.addSource('8_5', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.crljyfd9'
+});
+  
+map.addSource('8_6', {
+'type': 'raster',
+'url': 'mapbox://graphiallc.2aovdavd'
+});
+  
+map.addLayer({
+'id': '0_0',
+'type': 'raster',
+'source': '0_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '0_1',
+'type': 'raster',
+'source': '0_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '0_2',
+'type': 'raster',
+'source': '0_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '0_3',
+'type': 'raster',
+'source': '0_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '0_4',
+'type': 'raster',
+'source': '0_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '1_0',
+'type': 'raster',
+'source': '1_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '1_1',
+'type': 'raster',
+'source': '1_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '1_2',
+'type': 'raster',
+'source': '1_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '1_3',
+'type': 'raster',
+'source': '1_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '1_4',
+'type': 'raster',
+'source': '1_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '2_0',
+'type': 'raster',
+'source': '2_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '2_1',
+'type': 'raster',
+'source': '2_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '2_2',
+'type': 'raster',
+'source': '2_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '2_3',
+'type': 'raster',
+'source': '2_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '2_4',
+'type': 'raster',
+'source': '2_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '3_0',
+'type': 'raster',
+'source': '3_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '3_1',
+'type': 'raster',
+'source': '3_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '3_2',
+'type': 'raster',
+'source': '3_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '3_3',
+'type': 'raster',
+'source': '3_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '3_4',
+'type': 'raster',
+'source': '3_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_0',
+'type': 'raster',
+'source': '4_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_1',
+'type': 'raster',
+'source': '4_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_2',
+'type': 'raster',
+'source': '4_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_3',
+'type': 'raster',
+'source': '4_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_4',
+'type': 'raster',
+'source': '4_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_5',
+'type': 'raster',
+'source': '4_5',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '4_6',
+'type': 'raster',
+'source': '4_6',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_0',
+'type': 'raster',
+'source': '5_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_1',
+'type': 'raster',
+'source': '5_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_2',
+'type': 'raster',
+'source': '5_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_3',
+'type': 'raster',
+'source': '5_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_4',
+'type': 'raster',
+'source': '5_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_5',
+'type': 'raster',
+'source': '5_5',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '5_6',
+'type': 'raster',
+'source': '5_6',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_0',
+'type': 'raster',
+'source': '6_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_1',
+'type': 'raster',
+'source': '6_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_2',
+'type': 'raster',
+'source': '6_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_3',
+'type': 'raster',
+'source': '6_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_4',
+'type': 'raster',
+'source': '6_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_5',
+'type': 'raster',
+'source': '6_5',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '6_6',
+'type': 'raster',
+'source': '6_6',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_0',
+'type': 'raster',
+'source': '7_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_1',
+'type': 'raster',
+'source': '7_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_2',
+'type': 'raster',
+'source': '7_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_3',
+'type': 'raster',
+'source': '7_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_4',
+'type': 'raster',
+'source': '7_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_5',
+'type': 'raster',
+'source': '7_5',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '7_6',
+'type': 'raster',
+'source': '7_6',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_0',
+'type': 'raster',
+'source': '8_0',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_1',
+'type': 'raster',
+'source': '8_1',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_2',
+'type': 'raster',
+'source': '8_2',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_3',
+'type': 'raster',
+'source': '8_3',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_4',
+'type': 'raster',
+'source': '8_4',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_5',
+'type': 'raster',
+'source': '8_5',
+'paint': {}
+});
+  
+map.addLayer({
+'id': '8_6',
+'type': 'raster',
+'source': '8_6',
+'paint': {}
+});
+  
+map.addLayer({
+'id': 'taxparcel',
+'type': 'line',
+'source': 'taxparcel',
+'layout': {},
+'paint': {
+'line-color': 'yellow',
+'line-width': 3
+}
+});
+});
 </script>
 
 </body>
