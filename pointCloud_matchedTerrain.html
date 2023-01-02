@@ -33,29 +33,17 @@ onTilesetLoad: tileset => {
         const lng = cartographicCenter[0];
         const lat = cartographicCenter[1];
 }});
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiZ3JhcGhpYWxsYyIsImEiOiJjbGJ6czdmczQxMG96M25tbjdtcHAzMXZsIn0.W51THNVZ1hqjky2typW9xg';
-
-// style: 'mapbox://styles/mapbox/satellite-streets-v12',
-const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/satellite-v9',
-        center: [-120.92972957066604, 38.191006242062144],
-        zoom: 18.03914093661168,
-        pitch: 71.5,
-        interactive: true,
-  customAttribution: 'Graphia, LLC'
-    });
     
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ3JhcGhpYWxsYyIsImEiOiJjbGJ6czdmczQxMG96M25tbjdtcHAzMXZsIn0.W51THNVZ1hqjky2typW9xg';
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/satellite-v9',
-    center: [center.geometry.coordinates[0],center.geometry.coordinates[1]],
-    bounds: bounds,
-    pitch: 0,
+    center: [-120.92972957066604, 38.191006242062144],
+    pitch: 45,
+    zoom: 18.03914093661168,
     interactive: true,
-    projection: "globe"
+    projection: "globe",
+    customAttribution: 'Graphia, LLC'
 });
 
 map.addControl(new mapboxgl.NavigationControl());
